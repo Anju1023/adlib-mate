@@ -53,19 +53,3 @@ export async function analyzeScore(file: File): Promise<AnalysisResponse> {
 
   return response.json();
 }
-
-export async function synthesizeAudio(music_xml: string, instrument: string = "Saxophone"): Promise<Blob> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/synthesize-audio`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ music_xml, instrument }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Audio synthesis failed: ${response.statusText}`);
-  }
-
-  return response.blob();
-}
