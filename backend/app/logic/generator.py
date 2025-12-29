@@ -15,6 +15,10 @@ def generate_solo_xml(request: GenerationRequest) -> Tuple[str, str]:
         Tuple[str, str]: (music_xml_content, explanation_text)
     """
     
+    # Debug info
+    print(f"DEBUG: generate_solo_xml called.")
+    print(f"DEBUG: API_KEY is present: {bool(API_KEY)}")
+    
     # 1. Try using Gemini (AI Brain)
     if API_KEY:
         try:
@@ -25,9 +29,11 @@ def generate_solo_xml(request: GenerationRequest) -> Tuple[str, str]:
                 return result["music_xml"], explanation
         except Exception as e:
             print(f"Gemini generation failed, falling back to basic logic: {e}")
+            import traceback
+            traceback.print_exc()
 
     # 2. Fallback: Basic Logic using music21
-    print("Generating solo using basic music21 logic...")
+    print("Generating solo using basic music21 logic (Fallback Mode)...")
     
     # Create a Score
     s = stream.Score()
