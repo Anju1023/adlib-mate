@@ -1,18 +1,38 @@
 import music21
 from music21 import stream, harmony, note, meter, metadata, clef, instrument
 from backend.app.models.schemas import GenerationRequest, Difficulty
+from backend.app.services.gemini import generate_adlib_solo, API_KEY
+from typing import Tuple
 import io
 
-def generate_solo_xml(request: GenerationRequest) -> str:
+def generate_solo_xml(request: GenerationRequest) -> Tuple[str, str]:
     """
-    Generate a simple solo based on the chord progression using music21.
-    For MVP: Just plays the root of the chord as a whole note or half note.
+    Generate a solo based on the chord progression.
+    Prioritizes Gemini (AI Brain) for generation.
+    Falls back to simple music21 logic if API is unavailable or fails.
+    
+    Returns:
+        Tuple[str, str]: (music_xml_content, explanation_text)
     """
+    
+    # 1. Try using Gemini (AI Brain)
+    if API_KEY:
+        try:
+            print("Attempting to generate solo using Gemini...")
+            result = generate_adlib_solo(request.chords, request.config)
+            if "music_xml" in result:
+                explanation = result.get("explanation", "AI generated solo based on music theory.")
+                return result["music_xml"], explanation
+        except Exception as e:
+            print(f"Gemini generation failed, falling back to basic logic: {e}")
+
+    # 2. Fallback: Basic Logic using music21
+    print("Generating solo using basic music21 logic...")
     
     # Create a Score
     s = stream.Score()
     s.metadata = metadata.Metadata()
-    s.metadata.title = "Ad-lib Mate Generated Solo"
+    s.metadata.title = "Ad-lib Mate Generated Solo (Basic)"
     s.metadata.composer = "Ad-lib Mate AI"
 
     # Create a Part
@@ -72,15 +92,11 @@ def generate_solo_xml(request: GenerationRequest) -> str:
     s.append(p)
 
     # Export to MusicXML string
-    # music21 writes to a file by default. We need to capture the content.
-    # Using specific options to write to a string buffer is not direct in all versions,
-    # but we can use the 'musicxml' format writer.
-    
     # GEX (General Export) to bytes
     gex = music21.musicxml.m21ToXml.GeneralObjectExporter(s)
     out_bytes = gex.parse()
     
-    return out_bytes.decode('utf-8')
+    return out_bytes.decode('utf-8'), "Generated based on root notes for beginner difficulty (Offline Mode)."
 
 if __name__ == "__main__":
     # Test block

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Music, Play, Send, Plus, Settings2, AlertCircle, Camera, Loader2 } from 'lucide-react';
+import { Music, Play, Send, Plus, Settings2, AlertCircle, Camera, Loader2, Sparkles } from 'lucide-react';
 import { generateSolo, analyzeScore, GenerationRequest } from '@/lib/api';
 import dynamic from 'next/dynamic';
 
@@ -22,6 +22,7 @@ export default function Home() {
 	const [isGenerating, setIsGenerating] = useState(false);
 	const [isAnalyzing, setIsAnalyzing] = useState(false);
 	const [xmlData, setXmlData] = useState<string | null>(null);
+	const [explanation, setExplanation] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -32,6 +33,7 @@ export default function Home() {
 	const handleGenerate = async () => {
 		setIsGenerating(true);
 		setError(null);
+		setExplanation(null);
 
 		try {
 			// Basic chord parsing: split by space
@@ -50,6 +52,7 @@ export default function Home() {
 
 			const response = await generateSolo(request);
 			setXmlData(response.music_xml);
+			setExplanation(response.explanation);
 		} catch (err) {
 			console.error(err);
 			setError('生成に失敗しちゃった。バックエンドが動いてるか確認してね！');
@@ -164,11 +167,24 @@ export default function Home() {
 			</section>
 
 			{/* Score Viewer Section */}
-			<section className="flex-1 min-h-100">
+			<section className="flex-1 flex flex-col gap-6">
 				{xmlData ? (
-					<ScoreViewer xmlData={xmlData} />
+					<>
+						<ScoreViewer xmlData={xmlData} />
+						{explanation && (
+							<div className="card border-secondary/30 bg-secondary/5">
+								<h3 className="text-lg font-semibold text-secondary flex items-center gap-2 mb-2">
+									<Sparkles className="w-5 h-5" />
+									AI 先生の解説
+								</h3>
+								<p className="text-slate-300 leading-relaxed">
+									{explanation}
+								</p>
+							</div>
+						)}
+					</>
 				) : (
-					<div className="card h-full flex flex-col items-center justify-center border-dashed border-slate-700 bg-transparent">
+					<div className="card h-full flex flex-col items-center justify-center border-dashed border-slate-700 bg-transparent min-h-[300px]">
 						<div className="text-center space-y-4">
 							<div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto border border-slate-800">
 								<Play className="w-8 h-8 text-slate-700" />
