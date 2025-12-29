@@ -51,7 +51,15 @@
 ---
 
 ## 進行中 🏗️
-- (なし)
+- [ ] **Phase 3: デプロイ準備**
+    - [x] **Backend: 本番環境設定**
+        - [x] Render 向けの CORS 設定更新 (`main.py`)
+        - [ ] 依存関係の整理 (`requirements.txt`)
+    - [ ] **Frontend: 本番環境設定**
+        - [ ] Vercel 向けの API URL 環境変数設定
+    - [ ] **Verification**
+        - [x] `npm run build` (Frontend) の実行確認
+        - [x] `uvicorn` (Backend) の起動確認
 
 ---
 
