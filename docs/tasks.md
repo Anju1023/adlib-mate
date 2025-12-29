@@ -18,18 +18,14 @@
     - [x] **Frontend: 楽譜表示**
         - [x] OpenSheetMusicDisplay (OSMD) の統合
         - [x] 生成された MusicXML のレンダリング
+- [x] **Phase 2: AI 統合 (Vision & Reasoning)**
+    - [x] **AI: Vision モジュール**
+        - [x] Gemini-3-flash-preview を使った楽譜画像解析 API
+        - [x] フロントエンドのカメラ撮影・アップロード機能
 
 ---
 
 ## 進行中 🏗️
-- [ ] Phase 2: AI 統合 (Vision & Reasoning)
-    - [ ] **AI: Vision モジュール**
-        - [ ] Gemini-3-flash-preview を使った楽譜画像解析 API
-        - [ ] フロントエンドのカメラ撮影・アップロード機能
-
----
-
-## バックログ 📋
 - [ ] **AI: Brain モジュール**
     - [ ] Gemini-3-pro-preview (Reasoning) を使ったフレーズ構想ロジック
     - [ ] 音楽理論に基づいたアドバイス（解説）の生成 API
