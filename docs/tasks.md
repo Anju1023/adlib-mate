@@ -22,13 +22,13 @@
     - [x] **AI: Vision モジュール**
         - [x] Gemini-3-flash-preview を使った楽譜画像解析 API
         - [x] フロントエンドのカメラ撮影・アップロード機能
+    - [x] **AI: Brain モジュール**
+        - [x] Gemini-3-pro-preview (Reasoning) を使ったフレーズ構想ロジック
+        - [x] 音楽理論に基づいたアドバイス（解説）の生成 API
 
 ---
 
 ## 進行中 🏗️
-- [ ] **AI: Brain モジュール**
-    - [ ] Gemini-3-pro-preview (Reasoning) を使ったフレーズ構想ロジック
-    - [ ] 音楽理論に基づいたアドバイス（解説）の生成 API
 - [ ] **Sound: 音声合成**
     - [ ] Lyria-realtime-exp による高品質オーディオ生成
     - [ ] Tone.js によるフォールバック再生
