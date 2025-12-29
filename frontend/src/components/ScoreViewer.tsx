@@ -24,8 +24,12 @@ export default function ScoreViewer({ xmlData }: ScoreViewerProps) {
         drawComposer: false,
         drawSubtitle: false,
         drawingParameters: "compacttight",
+        followCursor: true, // Ensure cursor functionality is enabled
       });
-      osmdRef.current.cursor.show();
+      // Check if cursor exists before accessing it
+      if (osmdRef.current.cursor) {
+        osmdRef.current.cursor.show();
+      }
     }
 
     return () => {
