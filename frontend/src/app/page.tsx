@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Music, Play, Send, Plus, Settings2, AlertCircle, Camera, Loader2 } from 'lucide-react';
 import { generateSolo, analyzeScore, GenerationRequest } from '@/lib/api';
 import dynamic from 'next/dynamic';
@@ -17,12 +17,17 @@ const ScoreViewer = dynamic(() => import('@/components/ScoreViewer'), {
 });
 
 export default function Home() {
+	const [mounted, setMounted] = useState(false);
 	const [chordInput, setChordInput] = useState<string>('Dm7 G7 Cmaj7');
 	const [isGenerating, setIsGenerating] = useState(false);
 	const [isAnalyzing, setIsAnalyzing] = useState(false);
 	const [xmlData, setXmlData] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
 	const handleGenerate = async () => {
 		setIsGenerating(true);
@@ -75,6 +80,10 @@ export default function Home() {
 			if (fileInputRef.current) fileInputRef.current.value = '';
 		}
 	};
+
+	if (!mounted) {
+		return null;
+	}
 
 	return (
 		<main className="min-h-screen p-4 md:p-8 flex flex-col gap-8 max-w-4xl mx-auto">
