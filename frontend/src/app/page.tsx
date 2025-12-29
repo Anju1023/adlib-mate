@@ -101,11 +101,11 @@ export default function Home() {
 			{/* Header */}
 			<header className="flex items-center justify-between">
 				<div className="flex items-center gap-3">
-					<div className="p-2.5 bg-gradient-to-br from-primary to-amber-600 rounded-xl shadow-lg shadow-amber-900/20">
+					<div className="p-2.5 bg-linear-to-br from-primary to-amber-600 rounded-xl shadow-lg shadow-amber-900/20">
 						<Music className="text-slate-950 w-6 h-6" />
 					</div>
 					<div>
-						<h1 className="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary to-amber-200">
+						<h1 className="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-linear-to-r from-primary to-amber-200">
 							Ad-lib Mate
 						</h1>
 						<p className="text-xs text-slate-500 font-sans tracking-widest uppercase opacity-80">
@@ -145,7 +145,7 @@ export default function Home() {
 						className="hidden"
 					/>
 				</div>
-				
+
 				<div className="relative">
 					<label className="text-xs text-slate-500 mb-1.5 block font-mono">
 						INPUT CHORDS
@@ -164,7 +164,7 @@ export default function Home() {
 						</div>
 					)}
 				</div>
-				
+
 				<button
 					onClick={handleGenerate}
 					disabled={isGenerating || isAnalyzing}
@@ -188,9 +188,9 @@ export default function Home() {
 						<div className="card p-1 bg-white/5 border-amber-500/20">
 							<ScoreViewer xmlData={xmlData} />
 						</div>
-						
+
 						{explanation && (
-							<div className="card border-secondary/30 bg-gradient-to-br from-slate-900 to-indigo-950/30">
+							<div className="card border-secondary/30 bg-linear-to-br from-slate-900 to-indigo-950/30">
 								<h3 className="text-lg font-semibold text-secondary flex items-center gap-2 mb-3">
 									<Sparkles className="w-5 h-5" />
 									Session Advice
@@ -202,13 +202,15 @@ export default function Home() {
 						)}
 					</>
 				) : (
-					<div className="card h-full flex flex-col items-center justify-center border-dashed border-slate-700 bg-slate-900/30 min-h-[300px]">
+					<div className="card h-full flex flex-col items-center justify-center border-dashed border-slate-700 bg-slate-900/30 min-h-75">
 						<div className="text-center space-y-4">
 							<div className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto border border-slate-700 shadow-inner">
 								<Play className="w-8 h-8 text-slate-600 ml-1" />
 							</div>
 							<div className="space-y-1">
-								<h3 className="text-slate-300 font-serif text-lg">Ready to Jam?</h3>
+								<h3 className="text-slate-300 font-serif text-lg">
+									Ready to Jam?
+								</h3>
 								<p className="text-slate-500 text-sm max-w-xs mx-auto">
 									Enter chords or scan a chart to generate your ad-lib solo.
 								</p>
