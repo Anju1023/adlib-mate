@@ -13,9 +13,11 @@
     "lucide-react": "^0.562.0",
     "next": "16.1.1",
     "opensheetmusicdisplay": "^1.9.3",
+    "osmd-audio-player": "^0.7.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "tone": "^15.1.22"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

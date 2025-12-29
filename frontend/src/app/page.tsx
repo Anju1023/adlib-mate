@@ -1,7 +1,17 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Music, Play, Send, Plus, Settings2, AlertCircle, Camera, Loader2, Sparkles } from 'lucide-react';
+import {
+	Music,
+	Play,
+	Send,
+	Plus,
+	Settings2,
+	AlertCircle,
+	Camera,
+	Loader2,
+	Sparkles,
+} from 'lucide-react';
 import { generateSolo, analyzeScore, GenerationRequest } from '@/lib/api';
 import dynamic from 'next/dynamic';
 
@@ -71,9 +81,7 @@ export default function Home() {
 		try {
 			const result = await analyzeScore(file);
 			// Flatten chords from measures into a single string for the input
-			const chordsStr = result.chords
-				.map((m) => m.chords.join(' '))
-				.join(' ');
+			const chordsStr = result.chords.map((m) => m.chords.join(' ')).join(' ');
 			setChordInput(chordsStr);
 		} catch (err) {
 			console.error(err);
@@ -177,14 +185,12 @@ export default function Home() {
 									<Sparkles className="w-5 h-5" />
 									AI 先生の解説
 								</h3>
-								<p className="text-slate-300 leading-relaxed">
-									{explanation}
-								</p>
+								<p className="text-slate-300 leading-relaxed">{explanation}</p>
 							</div>
 						)}
 					</>
 				) : (
-					<div className="card h-full flex flex-col items-center justify-center border-dashed border-slate-700 bg-transparent min-h-[300px]">
+					<div className="card h-full flex flex-col items-center justify-center border-dashed border-slate-700 bg-transparent min-h-75">
 						<div className="text-center space-y-4">
 							<div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto border border-slate-800">
 								<Play className="w-8 h-8 text-slate-700" />
