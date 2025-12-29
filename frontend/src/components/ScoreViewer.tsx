@@ -121,7 +121,8 @@ export default function ScoreViewer({ xmlData }: ScoreViewerProps) {
           // Auto play after synthesis? Maybe just let user click play.
       } catch (err) {
           console.error("Synthesis failed:", err);
-          alert("Lyria 音声生成に失敗しました。Tone.js で再生します。");
+          // Fallback to Tone.js quietly
+          togglePlayback();
       } finally {
           setIsSynthesizing(false);
       }

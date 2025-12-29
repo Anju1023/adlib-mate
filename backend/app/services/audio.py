@@ -21,7 +21,10 @@ def synthesize_audio_from_xml(music_xml: str, instrument: str = "Saxophone") -> 
         raise ValueError("GOOGLE_API_KEY is not configured.")
 
     # In 2025 context, we use the specialized Lyria model
-    model_name = "lyria-realtime-exp"
+    # model_name = "lyria-realtime-exp"
+    
+    # Fallback to an available experimental model
+    model_name = "gemini-2.0-flash-exp"
     
     # Fallback/Alternative check: In reality, we might use a Gemini model capable of audio gen
     # model_name = "gemini-3.0-pro-preview" 
