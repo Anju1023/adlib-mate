@@ -97,16 +97,21 @@ export default function Home() {
 	}
 
 	return (
-		<main className="min-h-screen p-4 md:p-8 flex flex-col gap-8 max-w-4xl mx-auto">
+		<main className="min-h-screen p-4 md:p-8 flex flex-col gap-8 max-w-4xl mx-auto pb-24 md:pb-8">
 			{/* Header */}
 			<header className="flex items-center justify-between">
-				<div className="flex items-center gap-2">
-					<div className="p-2 bg-primary rounded-lg">
-						<Music className="text-background w-6 h-6" />
+				<div className="flex items-center gap-3">
+					<div className="p-2.5 bg-gradient-to-br from-primary to-amber-600 rounded-xl shadow-lg shadow-amber-900/20">
+						<Music className="text-slate-950 w-6 h-6" />
 					</div>
-					<h1 className="text-2xl font-bold tracking-tight text-primary">
-						Ad-lib Mate
-					</h1>
+					<div>
+						<h1 className="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary to-amber-200">
+							Ad-lib Mate
+						</h1>
+						<p className="text-xs text-slate-500 font-sans tracking-widest uppercase opacity-80">
+							AI Session Partner
+						</p>
+					</div>
 				</div>
 				<button className="p-2 hover:bg-slate-800 rounded-full transition-colors">
 					<Settings2 className="w-6 h-6 text-slate-400" />
@@ -114,23 +119,23 @@ export default function Home() {
 			</header>
 
 			{/* Input Section */}
-			<section className="card flex flex-col gap-4">
-				<div className="flex items-center justify-between">
-					<h2 className="text-lg font-semibold flex items-center gap-2">
+			<section className="card flex flex-col gap-5">
+				<div className="flex items-center justify-between border-b border-slate-800 pb-3">
+					<h2 className="text-xl font-semibold flex items-center gap-2 text-slate-200">
 						<Plus className="w-5 h-5 text-primary" />
-						今日のコード進行
+						Chord Progression
 					</h2>
 					<button
 						onClick={() => fileInputRef.current?.click()}
 						disabled={isAnalyzing}
-						className="flex items-center gap-2 text-sm text-secondary hover:text-indigo-400 transition-colors"
+						className="flex items-center gap-2 text-sm font-medium text-secondary hover:text-indigo-300 transition-colors bg-indigo-500/10 px-3 py-1.5 rounded-full border border-indigo-500/20 hover:bg-indigo-500/20"
 					>
 						{isAnalyzing ? (
 							<Loader2 className="w-4 h-4 animate-spin" />
 						) : (
 							<Camera className="w-4 h-4" />
 						)}
-						{isAnalyzing ? '解析中...' : '楽譜を撮影'}
+						{isAnalyzing ? 'Analyzing...' : 'Scan Score'}
 					</button>
 					<input
 						type="file"
@@ -140,35 +145,37 @@ export default function Home() {
 						className="hidden"
 					/>
 				</div>
+				
 				<div className="relative">
+					<label className="text-xs text-slate-500 mb-1.5 block font-mono">
+						INPUT CHORDS
+					</label>
 					<input
 						type="text"
 						value={chordInput}
 						onChange={(e) => setChordInput(e.target.value)}
-						className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-lg font-mono focus:border-primary focus:outline-none transition-colors"
-						placeholder="例: Dm7 G7 Cmaj7"
+						className="input-jazz"
+						placeholder="e.g. Dm7 G7 Cmaj7"
 					/>
 					{error && (
-						<div className="mt-2 text-rose-500 text-sm flex items-center gap-1">
+						<div className="mt-2 text-rose-500 text-sm flex items-center gap-1 animate-in fade-in slide-in-from-top-1">
 							<AlertCircle className="w-4 h-4" />
 							{error}
 						</div>
 					)}
-					<p className="mt-2 text-sm text-slate-500">
-						半角スペース区切りで入力してね！ (例: Dm7 G7 Cmaj7)
-					</p>
 				</div>
+				
 				<button
 					onClick={handleGenerate}
 					disabled={isGenerating || isAnalyzing}
-					className="btn-primary w-full gap-2 text-lg"
+					className="btn-primary w-full gap-2 text-lg mt-2"
 				>
 					{isGenerating ? (
-						<span className="animate-pulse">生成中...</span>
+						<span className="animate-pulse">Improvising...</span>
 					) : (
 						<>
 							<Send className="w-5 h-5" />
-							アドリブを生成する
+							Generate Solo
 						</>
 					)}
 				</button>
@@ -178,27 +185,34 @@ export default function Home() {
 			<section className="flex-1 flex flex-col gap-6">
 				{xmlData ? (
 					<>
-						<ScoreViewer xmlData={xmlData} />
+						<div className="card p-1 bg-white/5 border-amber-500/20">
+							<ScoreViewer xmlData={xmlData} />
+						</div>
+						
 						{explanation && (
-							<div className="card border-secondary/30 bg-secondary/5">
-								<h3 className="text-lg font-semibold text-secondary flex items-center gap-2 mb-2">
+							<div className="card border-secondary/30 bg-gradient-to-br from-slate-900 to-indigo-950/30">
+								<h3 className="text-lg font-semibold text-secondary flex items-center gap-2 mb-3">
 									<Sparkles className="w-5 h-5" />
-									AI 先生の解説
+									Session Advice
 								</h3>
-								<p className="text-slate-300 leading-relaxed">{explanation}</p>
+								<p className="text-slate-300 leading-relaxed font-sans text-sm md:text-base">
+									{explanation}
+								</p>
 							</div>
 						)}
 					</>
 				) : (
-					<div className="card h-full flex flex-col items-center justify-center border-dashed border-slate-700 bg-transparent min-h-75">
+					<div className="card h-full flex flex-col items-center justify-center border-dashed border-slate-700 bg-slate-900/30 min-h-[300px]">
 						<div className="text-center space-y-4">
-							<div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto border border-slate-800">
-								<Play className="w-8 h-8 text-slate-700" />
+							<div className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto border border-slate-700 shadow-inner">
+								<Play className="w-8 h-8 text-slate-600 ml-1" />
 							</div>
-							<p className="text-slate-500 max-w-xs">
-								生成されたアドリブがここに表示されるよ。
-								まずは上のフォームにコードを入力してみてね！
-							</p>
+							<div className="space-y-1">
+								<h3 className="text-slate-300 font-serif text-lg">Ready to Jam?</h3>
+								<p className="text-slate-500 text-sm max-w-xs mx-auto">
+									Enter chords or scan a chart to generate your ad-lib solo.
+								</p>
+							</div>
 						</div>
 					</div>
 				)}
