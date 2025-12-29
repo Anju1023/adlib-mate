@@ -93,23 +93,22 @@ adlib-mate/
 
 ### 5.3 タイポグラフィ
 
-- **Headings:** サンセリフ体 (Inter, Roboto)。モダンでクリーンな印象。
-- **Body:** 視認性の高いサンセリフ体。
-- **Chords/Music:** 等幅フォント (JetBrains Mono, Roboto Mono) またはジャズの手書き風フォント（装飾用）。
+- **Headings (Title/Hero):** `Playfair Display` (Serif)。エレガントでクラシックなジャズの雰囲気を演出。
+- **Body/System:** `Inter` (Sans-serif)。モダンで読みやすく、情報の整理に適している。
+- **Monospaced (Chords/Code):** `JetBrains Mono`。コード進行や音楽データの視認性を高める。
 
-### 5.4 UI コンポーネント指針
+### 5.4 UI 特殊効果
 
-- **ボタン:**
-    - 最小高さ `48px` (44px +)。楽器を持った指でも押し間違えないサイズ感。
-    - プライマリアクション（生成、再生）は画面下部に固定またはフローティング (FAB) させて親指で届く範囲に。
-- **楽譜表示 (OSMD):**
-    - 背景色は白ではなく、少しトーンを落としたクリーム色 (`#fffbeb`) か、反転表示（黒背景に白音符）を検討オプションとする。
-    - **カーソル:** 再生位置を示すバーは `Amber-500` (Gold) で光らせる。
-- **フィードバック:**
-    - ローディング中は「考え中...」ではなく、「即興演奏を構想中...」「バンドメンバーを収集中...」など音楽的なマイクロコピーを使用。
-    - 音声波形ビジュアライザーを表示して「音が鳴っている」ことを視覚的に伝える。
+- **Background Gradient:** `bg-slate-950` をベースに、上部中央から `Indigo-500` の淡い光、右側から `Amber-500` の微かな光が差し込む放射状グラデーションを採用。
+- **Glassmorphism:** カード要素には `backdrop-blur-md` と `bg-slate-900/60` を使用し、奥行き感を演出。
+- **Glow Effect:** 主要なアクションボタン (`btn-primary`) には Amber カラーの外光 (Drop Shadow) を適用。
 
-## 6. 技術選定詳細
+## 6. PWA (Progressive Web App) 仕様
+
+- **Standalone Mode:** ブラウザの UI を隠し、ネイティブアプリのようなフルスクリーン体験を提供。
+- **Theme Color:** Deep Night (`#020617`) を指定し、ステータスバーとの一体感を保持。
+- **Offline Readiness:** Service Worker (`next-pwa`) により、オフライン時でも楽譜の表示や既存データの閲覧を可能にする（将来拡張）。
+- **Installation:** `manifest.json` を通じて、iOS/Android のホーム画面に追加可能。
 
 - **Styling:** Tailwind CSS v4 (Utility-First)
 - **State Management:** React Context or Zustand (必要に応じて)
