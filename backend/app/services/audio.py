@@ -14,43 +14,31 @@ if API_KEY:
 
 def synthesize_audio_from_xml(music_xml: str, instrument: str = "Saxophone") -> bytes:
     """
-    Synthesizes realistic audio from MusicXML using Lyria (or capable Gemini model).
+    Synthesizes realistic audio from MusicXML using Lyria 2 (or capable Gemini model).
     Returns raw audio bytes.
     """
     if not API_KEY:
         raise ValueError("GOOGLE_API_KEY is not configured.")
 
-    # In 2025 context, we use the specialized Lyria model
-    # model_name = "lyria-realtime-exp"
+    # Updated to the latest Lyria 2 model identifier found in research
+    model_name = "lyria-002" 
     
-    # Fallback to an available experimental model
-    model_name = "gemini-2.0-flash-exp"
-    
-    # Fallback/Alternative check: In reality, we might use a Gemini model capable of audio gen
-    # model_name = "gemini-3.0-pro-preview" 
-
     print(f"DEBUG: synthesize_audio using model: {model_name}")
     model = genai.GenerativeModel(model_name=model_name)
 
     prompt = f"""
-    Generate a high-quality, realistic audio recording of a jazz solo based on this MusicXML data.
-    
-    Instrument: {instrument}
-    Style: Jazz Ad-lib
-    
-    The audio should sound like a real human performance with dynamic expression, 
-    articulation, and natural phrasing.
-    
     Input MusicXML:
     ```xml
     {music_xml}
     ```
+    
+    Task: Generate a high-fidelity audio rendition of this score.
+    Instrument: {instrument}
+    Model: Lyria-2
     """
 
     try:
         # Request audio output
-        # Note: This is a hypothetical API structure for audio generation in 'google-generativeai'
-        # In a real scenario, this might return a blob or a uri.
         response = model.generate_content(
             prompt,
             generation_config={
