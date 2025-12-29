@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException
-from backend.app.models.schemas import GenerationRequest, GenerationResponse
+from fastapi import APIRouter, HTTPException, UploadFile, File
+from backend.app.models.schemas import GenerationRequest, GenerationResponse, AnalysisResponse
 from backend.app.logic.generator import generate_solo_xml
+from backend.app.services.gemini import analyze_score_image
 
 router = APIRouter()
 
@@ -14,5 +15,17 @@ async def generate_solo(request: GenerationRequest):
             music_xml=xml_content,
             explanation="Generated based on root notes for beginner difficulty."
         )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/analyze-score", response_model=AnalysisResponse)
+async def analyze_score(file: UploadFile = File(...)):
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="File must be an image.")
+    
+    try:
+        contents = await file.read()
+        result = analyze_score_image(contents)
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

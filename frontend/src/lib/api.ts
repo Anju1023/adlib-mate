@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
 export interface GenerationRequest {
   chords: { measure_number: number; chords: string[] }[];
@@ -14,6 +14,12 @@ export interface GenerationResponse {
   explanation: string;
 }
 
+export interface AnalysisResponse {
+  title?: string;
+  key?: string;
+  chords: { measure_number: number; chords: string[] }[];
+}
+
 export async function generateSolo(request: GenerationRequest): Promise<GenerationResponse> {
   const response = await fetch(`${API_BASE_URL}/api/v1/generate-solo`, {
     method: "POST",
@@ -26,6 +32,23 @@ export async function generateSolo(request: GenerationRequest): Promise<Generati
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.detail || "Failed to generate solo");
+  }
+
+  return response.json();
+}
+
+export async function analyzeScore(file: File): Promise<AnalysisResponse> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch(`${API_BASE_URL}/api/v1/analyze-score`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || "Failed to analyze score");
   }
 
   return response.json();

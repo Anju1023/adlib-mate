@@ -28,3 +28,8 @@ class GenerationRequest(BaseModel):
 class GenerationResponse(BaseModel):
     music_xml: str
     explanation: Optional[str] = None
+
+class AnalysisResponse(BaseModel):
+    title: Optional[str] = None
+    key: Optional[str] = None
+    chords: List[ChordMeasure]
