@@ -15,7 +15,7 @@ allowed_origins = [origin.strip() for origin in allowed_origins_str.split(",")]
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=["*"],  # TEMPORARY: Allow all origins for debugging
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
