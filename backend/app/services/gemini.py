@@ -40,7 +40,7 @@ def analyze_score_image(image_bytes: bytes) -> AnalysisResponse:
 
     # Use the latest vision model
     # Use the latest vision model
-    model_name = 'gemini-2.0-flash-exp'
+    model_name = 'gemini-3-flash-preview'
     print(f'DEBUG: analyze_score_image using model: {model_name}')
     print(f'DEBUG: analyze_score_image using model: {model_name}')
 
@@ -90,7 +90,7 @@ def generate_adlib_solo(
 
     # Use the latest reasoning model
     # Use the latest vision model
-    model_name = 'gemini-2.0-flash-exp'
+    model_name = 'gemini-3-flash-preview'
     print(f'DEBUG: analyze_score_image using model: {model_name}')
     print(f'DEBUG: generate_adlib_solo using model: {model_name}')
 
