@@ -86,8 +86,8 @@ def generate_adlib_solo(
     if not client:
         raise ValueError('GOOGLE_API_KEY is not configured.')
 
-    # Use the latest reasoning model
-    model_name = 'gemini-3-pro-preview'
+    # Use flash for faster response during practice (user preference)
+    model_name = 'gemini-3-flash-preview'
     print(f'DEBUG: generate_adlib_solo using model: {model_name}')
 
     # Format chords for the prompt
