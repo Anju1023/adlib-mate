@@ -5,7 +5,7 @@ from google.genai import types
 from PIL import Image
 import io
 from typing import List, Dict, Any
-from app.models.schemas import AnalysisResponse, ChordMeasure, SoloConfig
+from app.models.schemas import AnalysisResponse, ChordMeasure, SoloConfig, ModelMode
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -84,9 +84,14 @@ def generate_adlib_solo(
     if not client:
         raise ValueError('GOOGLE_API_KEY が設定されていないよ。')
 
-    # 練習中のレスポンスを速くするために Flash を使用（ユーザーの希望だよ）
-    model_name = 'gemini-3-pro-preview'
-    print(f'デバッグ: generate_adlib_solo で使用中のモデル: {model_name}')
+    # 設定に基づいてモデルを選択するよ
+    # Speed モードなら Flash (速い！)、Quality モードなら Pro (賢い！)
+    if config.model_mode == ModelMode.QUALITY:
+        model_name = 'gemini-3-pro-preview'
+    else:
+        model_name = 'gemini-3-flash-preview'
+    
+    print(f'デバッグ: generate_adlib_solo で使用中のモデル: {model_name} (モード: {config.model_mode})')
 
     # プロンプト用にコード進行をフォーマット
     chords_text = '\n'.join(

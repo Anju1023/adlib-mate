@@ -12,6 +12,10 @@ class Instrument(str, Enum):
     TRUMPET = "Trumpet"
     PIANO = "Piano"
 
+class ModelMode(str, Enum):
+    SPEED = "speed"   # gemini-3-flash-preview
+    QUALITY = "quality" # gemini-3-pro-preview
+
 class ChordMeasure(BaseModel):
     measure_number: int
     chords: List[str]  # e.g., ["Dm7", "G7"]
@@ -20,6 +24,7 @@ class SoloConfig(BaseModel):
     difficulty: Difficulty = Difficulty.BEGINNER
     instrument: Instrument = Instrument.SAXOPHONE
     tempo: int = 120
+    model_mode: ModelMode = ModelMode.SPEED # Default to Speed
 
 class GenerationRequest(BaseModel):
     chords: List[ChordMeasure]

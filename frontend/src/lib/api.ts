@@ -6,6 +6,7 @@ export interface GenerationRequest {
     difficulty: "Beginner" | "Intermediate" | "Advanced";
     instrument: "Saxophone" | "Trumpet" | "Piano";
     tempo: number;
+    model_mode: "speed" | "quality";
   };
 }
 

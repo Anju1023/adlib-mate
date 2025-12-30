@@ -11,6 +11,8 @@ import {
 	Camera,
 	Loader2,
 	Sparkles,
+	Zap,
+	Brain,
 } from 'lucide-react';
 import { generateSolo, analyzeScore, GenerationRequest } from '@/lib/api';
 import dynamic from 'next/dynamic';
@@ -32,6 +34,7 @@ export default function Home() {
 	const [chordInput, setChordInput] = useState<string>('Dm7 G7 Cmaj7');
 	const [isGenerating, setIsGenerating] = useState(false);
 	const [isAnalyzing, setIsAnalyzing] = useState(false);
+	const [modelMode, setModelMode] = useState<'speed' | 'quality'>('speed');
 	const [xmlData, setXmlData] = useState<string | null>(null);
 	const [explanation, setExplanation] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -58,6 +61,7 @@ export default function Home() {
 					difficulty: 'Beginner',
 					instrument: 'Saxophone',
 					tempo: 120,
+					model_mode: modelMode,
 				},
 			};
 
@@ -164,6 +168,32 @@ export default function Home() {
 							{error}
 						</div>
 					)}
+				</div>
+
+				{/* Model Mode Toggle */}
+				<div className="flex bg-slate-900/50 p-1 rounded-lg border border-slate-800 self-end">
+					<button
+						onClick={() => setModelMode('speed')}
+						className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+							modelMode === 'speed'
+								? 'bg-indigo-600 text-white shadow-lg'
+								: 'text-slate-500 hover:text-slate-300'
+						}`}
+					>
+						<Zap className="w-3 h-3" />
+						Speed
+					</button>
+					<button
+						onClick={() => setModelMode('quality')}
+						className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+							modelMode === 'quality'
+								? 'bg-amber-600 text-white shadow-lg'
+								: 'text-slate-500 hover:text-slate-300'
+						}`}
+					>
+						<Brain className="w-3 h-3" />
+						Quality
+					</button>
 				</div>
 
 				<button
