@@ -6,6 +6,9 @@
 ## 1. ディレクトリ構成
 
 ### 1.1 全体構成 (Monorepo-like)
+**Deployment URL:**
+- **Frontend:** https://adlib-mate.vercel.app
+- **Backend:** https://adlib-mate-backend.onrender.com
 
 ```
 adlib-mate/
