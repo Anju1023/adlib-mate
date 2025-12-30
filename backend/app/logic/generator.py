@@ -24,9 +24,81 @@ def generate_solo_xml(request: GenerationRequest) -> Tuple[str, str]:
         try:
             print("Attempting to generate solo using Gemini...")
             result = generate_adlib_solo(request.chords, request.config)
+            
             if "music_xml" in result:
+                raw_xml = result["music_xml"]
                 explanation = result.get("explanation", "AI generated solo based on music theory.")
-                return result["music_xml"], explanation
+                
+                # --- Post-processing for Consistency ---
+                try:
+                    print("Post-processing Gemini XML to ensure chord/measure consistency...")
+                    # Parse the AI generated XML
+                    s = music21.converter.parseData(raw_xml)
+                    
+                    # Ensure metadata is set if missing
+                    if not s.metadata:
+                        s.metadata = metadata.Metadata()
+                    s.metadata.composer = "Ad-lib Mate AI"
+
+                    # Iterate through parts (usually just one)
+                    for p in s.parts:
+                        # Clear existing chords to avoid duplicates/inconsistencies
+                        # We use a list to avoid modifying the iterator while looping
+                        for el in list(p.flatten().getElementsByClass('ChordSymbol')):
+                            p.remove(el, recurse=True)
+
+                        # Re-insert chords from the request to guarantee they match inputs
+                        # We assume measures are numbered sequentially starting from 1
+                        for measure_data in request.chords:
+                            # Find the measure
+                            m = p.measure(measure_data.measure_number)
+                            if m is None:
+                                continue # measure might not exist in generated solo, skip
+
+                            num_chords = len(measure_data.chords)
+                            if num_chords == 0:
+                                continue
+
+                            # Distribute chords evenly in the measure
+                            # This is a simplification; ideally we'd map to beats
+                            # For MVP, assuming 4/4 and even distribution is better than nothing
+                            duration_per_chord = 4.0 / num_chords
+                            
+                            for i, chord_str in enumerate(measure_data.chords):
+                                try:
+                                    h = harmony.ChordSymbol(chord_str)
+                                    # Place the chord at the correct offset
+                                    # offset = i * duration_per_chord
+                                    # m.insert(offset, h)
+                                    # Note: inserting directly into measure is safer for XML export
+                                    # Using beat position
+                                    beat_pos = 1.0 + (i * duration_per_chord)
+                                    # music21 insert uses 0-based offset? No, measure offsets are usually relative
+                                    # Actually measure.insert(offset, element)
+                                    
+                                    # music21 beat calculation:
+                                    # beat 1 = offset 0.0
+                                    offset = i * duration_per_chord
+                                    m.insert(offset, h)
+                                    
+                                except Exception as e:
+                                    print(f"Error inserting chord {chord_str}: {e}")
+
+                    # Re-export to MusicXML
+                    gex = music21.musicxml.m21ToXml.GeneralObjectExporter(s)
+                    out_bytes = gex.parse()
+                    final_xml = out_bytes.decode('utf-8')
+                    
+                    return final_xml, explanation
+
+                except Exception as e:
+                    print(f"Error during XML post-processing: {e}")
+                    import traceback
+                    traceback.print_exc()
+                    # If post-processing fails, return raw XML as a fallback
+                    # It's better to show something than nothing
+                    return raw_xml, explanation
+
         except Exception as e:
             print(f"Gemini generation failed, falling back to basic logic: {e}")
             import traceback
