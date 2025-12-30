@@ -7,11 +7,6 @@ from typing import List, Dict, Any
 from app.models.schemas import AnalysisResponse, ChordMeasure, SoloConfig
 from dotenv import load_dotenv
 from pathlib import Path
-import os
-import google.generativeai as genai
-import json
-from PIL import Image
-import io
 
 # Debugging: Print current working directory and expected .env path
 print(f'Current working directory: {os.getcwd()}')
@@ -36,13 +31,13 @@ else:
 
 def analyze_score_image(image_bytes: bytes) -> AnalysisResponse:
     """
-    Analyzes a music score image using Gemini-3-flash-preview and extracts chord progressions.
+    Analyzes a music score image using Gemini-1.5-flash and extracts chord progressions.
     """
     if not API_KEY:
         raise ValueError('GOOGLE_API_KEY is not configured.')
 
-    # Use the latest vision model from Gemini 3 ecosystem
-    model_name = 'gemini-3-flash-preview'
+    # Use the latest vision model
+    model_name = 'gemini-1.5-flash'
     print(f'DEBUG: analyze_score_image using model: {model_name}')
 
     model = genai.GenerativeModel(model_name=model_name)
@@ -90,8 +85,8 @@ def generate_adlib_solo(
     if not API_KEY:
         raise ValueError('GOOGLE_API_KEY is not configured.')
 
-    # Use the latest reasoning model from Gemini 3 ecosystem
-    model_name = 'gemini-3-flash-preview'
+    # Use the latest reasoning model
+    model_name = 'gemini-1.5-flash'
     print(f'DEBUG: generate_adlib_solo using model: {model_name}')
 
     model = genai.GenerativeModel(model_name=model_name)
