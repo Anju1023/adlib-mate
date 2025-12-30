@@ -31,13 +31,13 @@ else:
 
 def analyze_score_image(image_bytes: bytes) -> AnalysisResponse:
     """
-    Analyzes a music score image using Gemini-1.5-flash and extracts chord progressions.
+    Analyzes a music score image using Gemini-3-flash-preview and extracts chord progressions.
     """
     if not API_KEY:
         raise ValueError('GOOGLE_API_KEY is not configured.')
 
     # Use the latest vision model
-    model_name = 'gemini-1.5-flash'
+    model_name = 'gemini-3-flash-preview'
     print(f'DEBUG: analyze_score_image using model: {model_name}')
 
     model = genai.GenerativeModel(model_name=model_name)
