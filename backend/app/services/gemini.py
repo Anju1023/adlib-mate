@@ -25,9 +25,7 @@ if API_KEY:
     print(f'Gemini API の設定に成功したよ！ Key: {masked_key}')
     client = genai.Client(api_key=API_KEY)
 else:
-    print(
-        f'重大な警告: {env_path} または環境変数に GOOGLE_API_KEY が見つからないよ！'
-    )
+    print(f'重大な警告: {env_path} または環境変数に GOOGLE_API_KEY が見つからないよ！')
     client = None
 
 
@@ -68,7 +66,7 @@ def analyze_score_image(image_bytes: bytes) -> AnalysisResponse:
                 response_mime_type='application/json',
             ),
         )
-        
+
         data = json.loads(response.text)
         return AnalysisResponse(**data)
     except Exception as e:
@@ -87,7 +85,7 @@ def generate_adlib_solo(
         raise ValueError('GOOGLE_API_KEY が設定されていないよ。')
 
     # 練習中のレスポンスを速くするために Flash を使用（ユーザーの希望だよ）
-    model_name = 'gemini-3-flash-preview'
+    model_name = 'gemini-3-pro-preview'
     print(f'デバッグ: generate_adlib_solo で使用中のモデル: {model_name}')
 
     # プロンプト用にコード進行をフォーマット
