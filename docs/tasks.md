@@ -44,16 +44,16 @@
     - [x] **Frontend:**
       - [x] `GenerationRequest` 型定義の更新
       - [x] UIへのモード選択スイッチ（Speed/Quality）の追加
+  - [x] **Sound: ジャズらしい再生 (Swing Feel)**
+    - [x] Frontend: `Tone.js` を使った独自の再生エンジン実装（`osmd-audio-player` から移行）
+    - [x] Frontend: スイング再生ロジック（裏拍遅延）の実装
+    - [x] Frontend: UI へのスイング ON/OFF トグルの実装
 
 ---
 
 ## 進行中 🏗️
 
 - [ ] **Phase 4: ユーザー体験の向上**
-  - [ ] **Sound: ジャズらしい再生 (Swing Feel)**
-    - [ ] Frontend: `osmd-audio-player` でのスイング再生可否の調査
-    - [ ] Frontend: UI へのスイング ON/OFF トグルの実装
-    - [ ] (Option): Tone.js を使ったカスタム再生ロジックの実装（ライブラリで不可の場合）
   - [ ] 音声合成の品質向上
   - [ ] 生成履歴の保存機能
 

@@ -79,16 +79,19 @@ export default function ScoreViewer({ xmlData }: ScoreViewerProps) {
   }, [xmlData]);
 
   // Extract Notes and Schedule Playback
-  const preparePlayback = useCallback(() => {
-    if (!osmdRef.current || !synthRef.current) return;
+  useEffect(() => {
+    if (!osmdRef.current || !synthRef.current || !xmlData || !isReady) return;
 
-    // Reset Transport
+    // Cleanup previous part
     Tone.Transport.stop();
     Tone.Transport.cancel();
     if (partRef.current) {
       partRef.current.dispose();
       partRef.current = null;
     }
+    
+    // Stop any stuck notes
+    synthRef.current.releaseAll();
 
     const osmd = osmdRef.current;
     const cursor = osmd.cursor;
@@ -100,7 +103,7 @@ export default function ScoreViewer({ xmlData }: ScoreViewerProps) {
     // BPM setting
     Tone.Transport.bpm.value = bpm;
     
-    // Iterate through the score to collect notes
+    // Iterate through the score
     while (!iterator.EndReached) {
       const voices = iterator.CurrentVoiceEntries;
       
@@ -108,48 +111,27 @@ export default function ScoreViewer({ xmlData }: ScoreViewerProps) {
         for (const note of voice.Notes) {
           if (note.isRest()) continue;
           
-          // Calculate timing
-          // OSMD uses a proprietary timestamp (Whole Note = 4.0? No, 1.0 usually means Quarter in music21 but OSMD varies)
-          // Actually, let's rely on iterator.CurrentSourceTimestamp
-          // OSMD Timestamp: 0 = start, 1 = quarter note (usually)
-          const absoluteTimestamp = iterator.CurrentSourceTimestamp.RealValue; // in Quarter Notes (usually 4.0 per whole)
-          
-          // Duration
-          const duration = note.Length.RealValue; // in Quarter Notes
+          const absoluteTimestamp = iterator.CurrentSourceTimestamp.RealValue; 
+          const duration = note.Length.RealValue; 
 
           // --- SWING LOGIC ---
           let playTime = absoluteTimestamp;
           let playDuration = duration;
 
           if (isSwing) {
-            // Check if it's on an off-beat (e.g., 0.5, 1.5, 2.5...)
-            // Assuming 4/4 time signature
-            const beatPosition = absoluteTimestamp % 1; // Decimal part
+            const beatPosition = absoluteTimestamp % 1; 
             
-            // Typical Swing: Eighth notes (0.0, 0.5) -> (0.0, 0.66)
-            // If the note starts on the 'and' of the beat (approx 0.5)
+            // Swing Logic: Delay the off-beat (approx 0.5)
             if (Math.abs(beatPosition - 0.5) < 0.05) {
-              // Delay the start
-              playTime += 0.16; // Shift from 0.5 to ~0.66
-              playDuration -= 0.16; // Shorten slightly to avoid overlap (optional)
-            } else if (Math.abs(beatPosition - 0.0) < 0.05 && duration <= 0.5) {
-               // On-beat eighth notes might need to be longer?
-               // For simple swing, mainly delaying the off-beat is key.
+              playTime += 0.16; // Shift
+              playDuration -= 0.16; // Shorten
             }
           }
           
-          // Pitch conversion
-          // OSMD Note: note.Pitch.ToString() -> "C4", "Bb4" etc.
-          // Note: Pitch might be null for some special entries, check existence
           if (note.Pitch) {
-             // Tone.js format: "C4", "D#4"
-             // OSMD Pitch.ToString() is usually usable but verify
              let pitch = note.Pitch.ToString();
-             // Clean up if needed (OSMD might return 'C' '4' etc)
-             // Usually Pitch.FundamentalNote + Accidental + Octave
-             
              events.push({
-               time: playTime, // in beats (quarter notes)
+               time: playTime,
                note: pitch,
                duration: playDuration,
                measureIndex: iterator.CurrentMeasureIndex
@@ -160,50 +142,29 @@ export default function ScoreViewer({ xmlData }: ScoreViewerProps) {
       iterator.moveToNext();
     }
     
-    cursor.reset(); // Reset cursor for visual playback
+    cursor.reset(); 
 
-    // Create a Tone.Part
-    // Tone.Part expects time in "bars:beats:sixteenths" or seconds. 
-    // If Transport.bpm is set, we can use beats as numbers if we set timeSignature?
-    // Easier: Convert beat numbers to seconds or just use beat numbers with Transport
-    
+    // Create Tone.Part
     const part = new Tone.Part((time, event: NoteEvent) => {
-      // Trigger Sound
       synthRef.current?.triggerAttackRelease(event.note, event.duration, time);
-      
-      // Update Cursor (Visual Sync)
-      // This is tricky because we need to sync with Audio Context time
-      // Simplified: Use Draw loop or just approximate
-      Tone.Draw.schedule(() => {
-         // Move cursor to specific measure or note?
-         // OSMD cursor logic is complex. 
-         // For MVP: Simplest is purely visual update, but jumping cursor is hard.
-         // Let's just try to 'next' it roughly? 
-         // Better: Map measureIndex to cursor.
-         // Since we can't easily jump cursor to random index without iterating,
-         // We might just let it be for now or implement a simpler cursor tracker.
-         
-         // Try a naive approach: If it's a new measure, next measure?
-         // Or just iterate cursor based on time?
-         // For now, let's skip complex cursor sync in this specialized Tone implementation
-         // to ensure Sound is perfect first.
-      }, time);
-      
     }, events).start(0);
     
     part.loop = false;
     partRef.current = part;
 
-  }, [xmlData, isSwing, bpm]);
+    // Reset transport position to start
+    Tone.Transport.position = 0;
+
+  }, [xmlData, isSwing, bpm, isReady]); // Re-run only when these change
 
   const togglePlayback = async () => {
-    await Tone.start(); // Ensure AudioContext is ready
+    await Tone.start(); 
     
     if (isPlaying) {
       Tone.Transport.pause();
       setIsPlaying(false);
+      synthRef.current?.releaseAll(); // Safety release on pause
     } else {
-      preparePlayback(); // Re-calculate schedule (in case swing changed)
       Tone.Transport.start();
       setIsPlaying(true);
     }
@@ -211,7 +172,9 @@ export default function ScoreViewer({ xmlData }: ScoreViewerProps) {
 
   const stopPlayback = () => {
     Tone.Transport.stop();
+    Tone.Transport.position = 0; // Reset to start
     setIsPlaying(false);
+    synthRef.current?.releaseAll(); // Kill all sounds
     osmdRef.current?.cursor.reset();
   };
 
