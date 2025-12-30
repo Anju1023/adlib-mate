@@ -39,7 +39,9 @@ def analyze_score_image(image_bytes: bytes) -> AnalysisResponse:
         raise ValueError('GOOGLE_API_KEY is not configured.')
 
     # Use the latest vision model
-    model_name = 'gemini-3-flash-preview'
+    # Use the latest vision model
+    model_name = 'gemini-2.0-flash-exp'
+    print(f'DEBUG: analyze_score_image using model: {model_name}')
     print(f'DEBUG: analyze_score_image using model: {model_name}')
 
     # Convert bytes to PIL Image
@@ -87,7 +89,9 @@ def generate_adlib_solo(
         raise ValueError('GOOGLE_API_KEY is not configured.')
 
     # Use the latest reasoning model
-    model_name = 'gemini-3-flash-preview'
+    # Use the latest vision model
+    model_name = 'gemini-2.0-flash-exp'
+    print(f'DEBUG: analyze_score_image using model: {model_name}')
     print(f'DEBUG: generate_adlib_solo using model: {model_name}')
 
     # Format chords for the prompt
