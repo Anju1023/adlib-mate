@@ -9,40 +9,40 @@ from app.models.schemas import AnalysisResponse, ChordMeasure, SoloConfig
 from dotenv import load_dotenv
 from pathlib import Path
 
-# Debugging: Print current working directory and expected .env path
-print(f'Current working directory: {os.getcwd()}')
+# デバッグ用: 現在の作業ディレクトリと .env の期待されるパスを表示するよ
+print(f'現在の作業ディレクトリ: {os.getcwd()}')
 env_path = Path(__file__).resolve().parent.parent.parent / '.env'
-print(f'Looking for .env at: {env_path}')
-print(f'Does .env exist? {env_path.exists()}')
+print(f'.env を探している場所: {env_path}')
+print(f'.env は存在してる？: {env_path.exists()}')
 
 load_dotenv(dotenv_path=env_path)
 
-# Configure Gemini API
+# Gemini API の設定
 API_KEY = os.getenv('GOOGLE_API_KEY')
 
 if API_KEY:
     masked_key = API_KEY[:4] + '...' + API_KEY[-4:] if len(API_KEY) > 8 else '****'
-    print(f'Gemini API configured successfully. Key: {masked_key}')
+    print(f'Gemini API の設定に成功したよ！ Key: {masked_key}')
     client = genai.Client(api_key=API_KEY)
 else:
     print(
-        f'CRITICAL WARNING: GOOGLE_API_KEY not found in env variables or .env file at {env_path}'
+        f'重大な警告: {env_path} または環境変数に GOOGLE_API_KEY が見つからないよ！'
     )
     client = None
 
 
 def analyze_score_image(image_bytes: bytes) -> AnalysisResponse:
     """
-    Analyzes a music score image using Gemini-3-flash-preview and extracts chord progressions.
+    Gemini-3-flash-preview を使って楽譜画像を解析し、コード進行を抽出するよ。
     """
     if not client:
-        raise ValueError('GOOGLE_API_KEY is not configured.')
+        raise ValueError('GOOGLE_API_KEY が設定されていないよ。')
 
-    # Use the latest vision model
+    # 最新の Vision モデルを使用
     model_name = 'gemini-3-flash-preview'
-    print(f'DEBUG: analyze_score_image using model: {model_name}')
+    print(f'デバッグ: analyze_score_image で使用中のモデル: {model_name}')
 
-    # Convert bytes to PIL Image
+    # バイトデータを PIL Image に変換
     image = Image.open(io.BytesIO(image_bytes))
 
     prompt = """
@@ -81,18 +81,18 @@ def generate_adlib_solo(
     chords: List[ChordMeasure], config: SoloConfig
 ) -> Dict[str, Any]:
     """
-    Generates an ad-lib solo and an explanation using Gemini based on chords and config.
+    コード進行と設定に基づいて、Gemini を使ってアドリブソロと解説を生成するよ。
     """
     if not client:
-        raise ValueError('GOOGLE_API_KEY is not configured.')
+        raise ValueError('GOOGLE_API_KEY が設定されていないよ。')
 
-    # Use flash for faster response during practice (user preference)
+    # 練習中のレスポンスを速くするために Flash を使用（ユーザーの希望だよ）
     model_name = 'gemini-3-flash-preview'
-    print(f'DEBUG: generate_adlib_solo using model: {model_name}')
+    print(f'デバッグ: generate_adlib_solo で使用中のモデル: {model_name}')
 
-    # Format chords for the prompt
+    # プロンプト用にコード進行をフォーマット
     chords_text = '\n'.join(
-        [f'Measure {m.measure_number}: {", ".join(m.chords)}' for m in chords]
+        [f'小節 {m.measure_number}: {", ".join(m.chords)}' for m in chords]
     )
 
     prompt = f"""

@@ -29,62 +29,48 @@ def generate_solo_xml(request: GenerationRequest) -> Tuple[str, str]:
                 raw_xml = result["music_xml"]
                 explanation = result.get("explanation", "AI generated solo based on music theory.")
                 
-                # --- Post-processing for Consistency ---
+                # --- 楽譜の整合性を保つための後処理 ---
                 try:
-                    print("Post-processing Gemini XML to ensure chord/measure consistency...")
-                    # Parse the AI generated XML
+                    print("Geminiが生成したXMLを整形して、コード進行と小節の整合性を整えるよ...")
+                    # AIが生成したXMLをmusic21でパース（解析）する
                     s = music21.converter.parseData(raw_xml)
                     
-                    # Ensure metadata is set if missing
+                    # メタデータがなければ作成して、作曲者名をセット！
                     if not s.metadata:
                         s.metadata = metadata.Metadata()
                     s.metadata.composer = "Ad-lib Mate AI"
 
-                    # Iterate through parts (usually just one)
+                    # パート（通常は1つ）ごとに処理していくよ
                     for p in s.parts:
-                        # Clear existing chords to avoid duplicates/inconsistencies
-                        # We use a list to avoid modifying the iterator while looping
+                        # 重複を防ぐために、既存のコードシンボルを一旦クリアするね
                         for el in list(p.flatten().getElementsByClass('ChordSymbol')):
                             p.remove(el, recurse=True)
 
-                        # Re-insert chords from the request to guarantee they match inputs
-                        # We assume measures are numbered sequentially starting from 1
+                        # リクエストされた正しいコード進行を、各小節に確実に埋め込んでいくよ
                         for measure_data in request.chords:
-                            # Find the measure
+                            # 該当する小節を探す
                             m = p.measure(measure_data.measure_number)
                             if m is None:
-                                continue # measure might not exist in generated solo, skip
+                                continue # 小節が見つからない場合はスキップ
 
                             num_chords = len(measure_data.chords)
                             if num_chords == 0:
                                 continue
 
-                            # Distribute chords evenly in the measure
-                            # This is a simplification; ideally we'd map to beats
-                            # For MVP, assuming 4/4 and even distribution is better than nothing
+                            # 1小節内のコードを等間隔に配置するよ（4/4拍子を想定）
                             duration_per_chord = 4.0 / num_chords
                             
                             for i, chord_str in enumerate(measure_data.chords):
                                 try:
                                     h = harmony.ChordSymbol(chord_str)
-                                    # Place the chord at the correct offset
-                                    # offset = i * duration_per_chord
-                                    # m.insert(offset, h)
-                                    # Note: inserting directly into measure is safer for XML export
-                                    # Using beat position
-                                    beat_pos = 1.0 + (i * duration_per_chord)
-                                    # music21 insert uses 0-based offset? No, measure offsets are usually relative
-                                    # Actually measure.insert(offset, element)
-                                    
-                                    # music21 beat calculation:
-                                    # beat 1 = offset 0.0
+                                    # 正しい位置（オフセット）にコードを挿入！
                                     offset = i * duration_per_chord
                                     m.insert(offset, h)
                                     
                                 except Exception as e:
-                                    print(f"Error inserting chord {chord_str}: {e}")
+                                    print(f"コード {chord_str} の挿入中にエラーが出ちゃった: {e}")
 
-                    # Re-export to MusicXML
+                    # 綺麗に整えた楽譜を再びMusicXMLに書き出すよ
                     gex = music21.musicxml.m21ToXml.GeneralObjectExporter(s)
                     out_bytes = gex.parse()
                     final_xml = out_bytes.decode('utf-8')
@@ -92,11 +78,10 @@ def generate_solo_xml(request: GenerationRequest) -> Tuple[str, str]:
                     return final_xml, explanation
 
                 except Exception as e:
-                    print(f"Error during XML post-processing: {e}")
+                    print(f"XMLの後処理中にエラーが発生しちゃった: {e}")
                     import traceback
                     traceback.print_exc()
-                    # If post-processing fails, return raw XML as a fallback
-                    # It's better to show something than nothing
+                    # 後処理に失敗しても、せっかくAIが作ったものだから生データを返しておくね
                     return raw_xml, explanation
 
         except Exception as e:

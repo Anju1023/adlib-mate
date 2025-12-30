@@ -20,6 +20,9 @@ export interface AnalysisResponse {
   chords: { measure_number: number; chords: string[] }[];
 }
 
+/**
+ * バックエンドにアドリブソロの生成をリクエストするよ
+ */
 export async function generateSolo(request: GenerationRequest): Promise<GenerationResponse> {
   const response = await fetch(`${API_BASE_URL}/api/v1/generate-solo`, {
     method: "POST",
@@ -31,12 +34,15 @@ export async function generateSolo(request: GenerationRequest): Promise<Generati
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.detail || "Failed to generate solo");
+    throw new Error(error.detail || "ソロの生成に失敗しちゃった");
   }
 
   return response.json();
 }
 
+/**
+ * 楽譜画像をアップロードして、コード進行を解析してもらうよ
+ */
 export async function analyzeScore(file: File): Promise<AnalysisResponse> {
   const formData = new FormData();
   formData.append("file", file);
