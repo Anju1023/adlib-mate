@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { generateSolo, analyzeScore, GenerationRequest } from '@/lib/api';
 import dynamic from 'next/dynamic';
+import ReactMarkdown from 'react-markdown';
 
 // Dynamically import ScoreViewer with SSR disabled to prevent hydration errors
 // because OpenSheetMusicDisplay relies on window/document objects.
@@ -195,9 +196,9 @@ export default function Home() {
 									<Sparkles className="w-5 h-5" />
 									Session Advice
 								</h3>
-								<p className="text-slate-300 leading-relaxed font-sans text-sm md:text-base">
-									{explanation}
-								</p>
+								<div className="prose prose-invert prose-sm max-w-none text-slate-300 leading-relaxed font-sans">
+									<ReactMarkdown>{explanation}</ReactMarkdown>
+								</div>
 							</div>
 						)}
 					</>
