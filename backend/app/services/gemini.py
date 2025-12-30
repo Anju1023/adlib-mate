@@ -86,7 +86,7 @@ def generate_adlib_solo(
         raise ValueError('GOOGLE_API_KEY is not configured.')
 
     # Use the latest reasoning model
-    model_name = 'gemini-1.5-flash'
+    model_name = 'gemini-3-flash-preview'
     print(f'DEBUG: generate_adlib_solo using model: {model_name}')
 
     model = genai.GenerativeModel(model_name=model_name)
