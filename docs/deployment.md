@@ -39,7 +39,7 @@ Render の "Environment" タブで設定してください。
 | キー | 値 (例) | 説明 |
 | :--- | :--- | :--- |
 | `PYTHON_VERSION` | `3.11.9` | 3.11 系を指定推奨 |
-| `GEMINI_API_KEY` | `AIza...` | Google AI Studio の API キー |
+| `GOOGLE_API_KEY` | `AIza...` | Google AI Studio の API キー |
 | `ALLOWED_ORIGINS` | `https://adlib-mate.vercel.app` | Vercel のデプロイ先 URL (後で設定) |
 
 ### 2.4 デプロイ後の確認
