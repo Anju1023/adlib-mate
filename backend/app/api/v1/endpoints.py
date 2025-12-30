@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, UploadFile, File
-from backend.app.models.schemas import GenerationRequest, GenerationResponse, AnalysisResponse
-from backend.app.logic.generator import generate_solo_xml
-from backend.app.services.gemini import analyze_score_image
+from app.models.schemas import GenerationRequest, GenerationResponse, AnalysisResponse
+from app.logic.generator import generate_solo_xml
+from app.services.gemini import analyze_score_image
 
 router = APIRouter()
 

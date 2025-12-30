@@ -1,7 +1,7 @@
 import music21
 from music21 import stream, harmony, note, meter, metadata, clef, instrument
-from backend.app.models.schemas import GenerationRequest, Difficulty
-from backend.app.services.gemini import generate_adlib_solo, API_KEY
+from app.models.schemas import GenerationRequest, Difficulty
+from app.services.gemini import generate_adlib_solo, API_KEY
 from typing import Tuple
 import io
 

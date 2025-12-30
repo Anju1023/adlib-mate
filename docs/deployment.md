@@ -27,10 +27,10 @@
 | **Name** | `adlib-mate-backend` | 任意の名前 |
 | **Region** | `Oregon (US West)` | 日本に近いリージョンが望ましいが、無料プランならデフォルトでOK |
 | **Branch** | `main` | |
-| **Root Directory** | `.` | デフォルト (ルート) |
+| **Root Directory** | `backend` | **重要: `backend` を指定** |
 | **Runtime** | `Python 3` | |
-| **Build Command** | `pip install -r backend/requirements.txt` | 依存関係のインストール |
-| **Start Command** | `uvicorn backend.main:app --host 0.0.0.0 --port $PORT` | アプリケーションの起動 |
+| **Build Command** | `pip install -r requirements.txt` | パスが変わることに注意 |
+| **Start Command** | `uvicorn main:app --host 0.0.0.0 --port $PORT` | パスが変わることに注意 |
 
 ### 2.3 環境変数 (Environment Variables)
 

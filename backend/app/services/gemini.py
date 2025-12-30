@@ -4,7 +4,7 @@ import google.generativeai as genai
 from PIL import Image
 import io
 from typing import List, Dict, Any
-from backend.app.models.schemas import AnalysisResponse, ChordMeasure, SoloConfig
+from app.models.schemas import AnalysisResponse, ChordMeasure, SoloConfig
 from dotenv import load_dotenv
 from pathlib import Path
 import os
