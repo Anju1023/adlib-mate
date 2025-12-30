@@ -14,34 +14,37 @@ from PIL import Image
 import io
 
 # Debugging: Print current working directory and expected .env path
-print(f"Current working directory: {os.getcwd()}")
+print(f'Current working directory: {os.getcwd()}')
 env_path = Path(__file__).resolve().parent.parent.parent / '.env'
-print(f"Looking for .env at: {env_path}")
-print(f"Does .env exist? {env_path.exists()}")
+print(f'Looking for .env at: {env_path}')
+print(f'Does .env exist? {env_path.exists()}')
 
 load_dotenv(dotenv_path=env_path)
 
 # Configure Gemini API
-API_KEY = os.getenv("GOOGLE_API_KEY")
+API_KEY = os.getenv('GOOGLE_API_KEY')
 
 if API_KEY:
-    masked_key = API_KEY[:4] + "..." + API_KEY[-4:] if len(API_KEY) > 8 else "****"
-    print(f"Gemini API configured successfully. Key: {masked_key}")
+    masked_key = API_KEY[:4] + '...' + API_KEY[-4:] if len(API_KEY) > 8 else '****'
+    print(f'Gemini API configured successfully. Key: {masked_key}')
     genai.configure(api_key=API_KEY)
 else:
-    print(f"CRITICAL WARNING: GOOGLE_API_KEY not found in env variables or .env file at {env_path}")
+    print(
+        f'CRITICAL WARNING: GOOGLE_API_KEY not found in env variables or .env file at {env_path}'
+    )
+
 
 def analyze_score_image(image_bytes: bytes) -> AnalysisResponse:
     """
     Analyzes a music score image using Gemini-3-flash-preview and extracts chord progressions.
     """
     if not API_KEY:
-        raise ValueError("GOOGLE_API_KEY is not configured.")
+        raise ValueError('GOOGLE_API_KEY is not configured.')
 
     # Use the latest vision model from Gemini 3 ecosystem
-    model_name = "gemini-3-flash-preview" 
-    print(f"DEBUG: analyze_score_image using model: {model_name}")
-    
+    model_name = 'gemini-3-flash-preview'
+    print(f'DEBUG: analyze_score_image using model: {model_name}')
+
     model = genai.GenerativeModel(model_name=model_name)
 
     # Convert bytes to PIL Image
@@ -65,33 +68,38 @@ def analyze_score_image(image_bytes: bytes) -> AnalysisResponse:
     response = model.generate_content(
         [prompt, image],
         generation_config={
-            "response_mime_type": "application/json",
-        }
+            'response_mime_type': 'application/json',
+        },
     )
 
     try:
         data = json.loads(response.text)
         return AnalysisResponse(**data)
     except Exception as e:
-        print(f"Error parsing Gemini response: {e}")
-        print(f"Raw response: {response.text}")
-        raise ValueError("Failed to analyze the score image correctly.")
+        print(f'Error parsing Gemini response: {e}')
+        print(f'Raw response: {response.text}')
+        raise ValueError('Failed to analyze the score image correctly.')
 
-def generate_adlib_solo(chords: List[ChordMeasure], config: SoloConfig) -> Dict[str, Any]:
+
+def generate_adlib_solo(
+    chords: List[ChordMeasure], config: SoloConfig
+) -> Dict[str, Any]:
     """
     Generates an ad-lib solo and an explanation using Gemini based on chords and config.
     """
     if not API_KEY:
-        raise ValueError("GOOGLE_API_KEY is not configured.")
+        raise ValueError('GOOGLE_API_KEY is not configured.')
 
     # Use the latest reasoning model from Gemini 3 ecosystem
-    model_name = "gemini-3-pro-preview" 
-    print(f"DEBUG: generate_adlib_solo using model: {model_name}")
-    
+    model_name = 'gemini-3-flash-preview'
+    print(f'DEBUG: generate_adlib_solo using model: {model_name}')
+
     model = genai.GenerativeModel(model_name=model_name)
 
     # Format chords for the prompt
-    chords_text = "\n".join([f"Measure {m.measure_number}: {', '.join(m.chords)}" for m in chords])
+    chords_text = '\n'.join(
+        [f'Measure {m.measure_number}: {", ".join(m.chords)}' for m in chords]
+    )
 
     prompt = f"""
     You are a professional jazz musician and teacher.
@@ -126,15 +134,15 @@ def generate_adlib_solo(chords: List[ChordMeasure], config: SoloConfig) -> Dict[
         response = model.generate_content(
             prompt,
             generation_config={
-                "response_mime_type": "application/json",
-            }
+                'response_mime_type': 'application/json',
+            },
         )
-        print("DEBUG: Gemini response received.")
+        print('DEBUG: Gemini response received.')
         # print(f"DEBUG: Raw response text: {response.text[:200]}...") # Print first 200 chars for check
 
         return json.loads(response.text)
     except Exception as e:
-        print(f"Error in generate_adlib_solo: {e}")
+        print(f'Error in generate_adlib_solo: {e}')
         if 'response' in locals() and hasattr(response, 'text'):
-             print(f"Full failed response text: {response.text}")
-        raise ValueError("Failed to generate ad-lib solo.")
+            print(f'Full failed response text: {response.text}')
+        raise ValueError('Failed to generate ad-lib solo.')
